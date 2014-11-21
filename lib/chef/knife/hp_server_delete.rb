@@ -42,6 +42,10 @@ class Chef
         :long => "--node-name NAME",
         :description => "The name of the node and client to delete, if it differs from the server name. Only has meaning when used with the '--purge' option."
 
+      option :identity_file,
+        :long => "--identity-file IDENTITY_FILE",
+        :description => "Megam systems usage. It does nothing."
+
       # Extracted from Chef::Knife.delete_object, because it has a
       # confirmation step built in... By specifying the '--purge'
       # flag (and also explicitly confirming the server destruction!)
@@ -63,6 +67,15 @@ class Chef
 
         @name_args.each do |instance_id|
           begin
+
+        #Fetch instance_id by name of the server =====> MEGAM SYSTEMS CODE START
+        connection.servers.all.each do |ser|
+        	if ser.name.to_s == "#{instance_id}"
+        		instance_id = ser.id
+		end
+	end
+	#=====> MEGAM SYSTEMS CODE END
+
             server = connection.servers.get(instance_id)
 
             msg_pair("Instance ID", server.id)

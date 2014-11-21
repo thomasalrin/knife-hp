@@ -129,6 +129,13 @@ class Chef
       :description => "Comma separated list of the name(s) of the network(s) for the server to attach",
       :proc => Proc.new { |networks| networks.split(',') }
 
+      option :json_attributes,
+        :short => "-j JSON",
+        :long => "--json-attributes JSON",
+        :description => "A JSON string to be added to the first run of chef-client",
+        :proc => lambda { |o| JSON.parse(o) }
+
+
       option :floating_ip,
       :short => "-a [IP]",
       :long => "--floating-ip [IP]",
@@ -275,6 +282,7 @@ class Chef
         end
         msg_pair("Environment", config[:environment] || '_default')
         msg_pair("Run List", config[:run_list].join(', '))
+        msg_pair("JSON Attributes",config[:json_attributes]) unless !config[:json_attributes] || config[:json_attributes].empty?
       end
 
       def bootstrap_for_node(server, bootstrap_ip_address)
@@ -286,6 +294,7 @@ class Chef
         bootstrap.config[:host_key_verify] = config[:host_key_verify]
         bootstrap.config[:chef_node_name] = server.name
         bootstrap.config[:prerelease] = config[:prerelease]
+        bootstrap.config[:first_boot_attributes] = locate_config_value(:json_attributes) || {}
         bootstrap.config[:bootstrap_version] = locate_config_value(:bootstrap_version)
         bootstrap.config[:bootstrap_proxy] = locate_config_value(:bootstrap_proxy)
         bootstrap.config[:distro] = locate_config_value(:distro)

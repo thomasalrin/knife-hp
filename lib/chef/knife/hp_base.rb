@@ -62,7 +62,7 @@ class Chef
           option :hp_avl_zone,
           :short => "-R region",
           :long => "--hp-region Region",
-          :default => "US-EAST",
+          :default => "US-WEST",
           :description => "Your HP Cloud Region (US-EAST/US-WEST)",
           :proc => Proc.new { |key| Chef::Config[:knife][:hp_avl_zone] = key.downcase }
 
